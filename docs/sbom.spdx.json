@@ -1,0 +1,108 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "Studio M0 source and models inventory",
+  "documentNamespace": "https://spdx.org/spdxdocs/studio-m0-7ab29d8c-2f34-417e-9d2b-b627d57c8b81",
+  "creationInfo": {
+    "created": "2026-11-19T12:00:00Z",
+    "creators": [
+      "Tool: Codex"
+    ]
+  },
+  "documentComment": "Inventario iniziale. Dipendenze OS/toolchain e verifica licenze release da completare.",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package0",
+      "name": "studio-core",
+      "versionInfo": "0.1.0-m0.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package1",
+      "name": "whisper.cpp",
+      "versionInfo": "1.7.6",
+      "downloadLocation": "https://github.com/ggml-org/whisper.cpp",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package2",
+      "name": "Whisper-small-Q5_1",
+      "versionInfo": "small",
+      "downloadLocation": "https://huggingface.co/ggerganov/whisper.cpp",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package3",
+      "name": "llama.cpp",
+      "versionInfo": "b6000",
+      "downloadLocation": "https://github.com/ggml-org/llama.cpp",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package4",
+      "name": "Qwen2.5-0.5B-Instruct-Q4_K_M",
+      "versionInfo": "Qwen2.5",
+      "downloadLocation": "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "Apache-2.0",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-Package5",
+      "name": "Inter",
+      "versionInfo": "variable",
+      "downloadLocation": "https://github.com/google/fonts",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "OFL-1.1",
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package0"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package1"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package2"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package3"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package4"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package5"
+    }
+  ]
+}
