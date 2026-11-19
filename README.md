@@ -1,6 +1,6 @@
 # Pacchetti Insurance Cinematic Studio M0
 Scaricare questo ramo con Code > Download ZIP ed estrarre la cartella sul PC.
-I sorgenti sono nel ramo insurance-cinematic-studio-m0.
+I sorgenti sono nel ramo main.
 Il checkpoint rimane M0 BLOCKED per collaudo fisico e parità. APK con firma di test, setup Windows privo di Authenticode.
 
 ## File
