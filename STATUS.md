@@ -1,5 +1,5 @@
 # Stato al 19 novembre 2026
-Versione corrente 0.1.0-m0.3. Le prime evidenze nella tabella si riferiscono alla baseline M0.1. M0 resta BLOCKED per accettazione multipiattaforma. Il laboratorio è compilabile, con pacchetti di prova effettivamente prodotti. M1–M9 restano aperte.
+Versione corrente 0.1.0-m0.4. Le prime evidenze nella tabella si riferiscono alla baseline M0.1. M0 resta BLOCKED per accettazione multipiattaforma. Il laboratorio è compilabile, con pacchetti di prova effettivamente prodotti. M1–M9 restano aperte.
 
 | Prova | Esito | Evidenza |
 | --- | --- | --- |
@@ -43,3 +43,14 @@ Hardware dichiarato dal proprietario per il collaudo M0.3, Realme 11 Pro+ 5G 12+
 ## Kit per il collaudo fisico M0.3
 
 Aggiunti clip, voce e SRT sintetici pronti all'uso, raccoglitore Windows e confronto diagnostico degli ZIP delle build correnti. I due percorsi Windows hanno prodotto la diagnostica attesa sul banco PowerShell Linux, con 99 fotogrammi e livelli audio nella soglia. La procedura per i dispositivi è in docs/COLLAUDO-RAPIDO.md. Evidenze host in qa/collaudo-kit-m03.md. Il gate fisico e la verifica dello stesso bundle progetto restano aperti.
+
+## Checkpoint M0.4 — archivio portabile dei media
+
+Windows e Android creano e aprono la stessa composizione ZIP di clip, voce e SRT, con verifica di manifest, dimensioni, nomi e SHA-256. Il rapporto registra lo SHA‑256 dello ZIP effettivamente renderizzato. Il kit M0.4 include un archivio sintetico per collaudare questo percorso e un comparatore che controlla la corrispondenza dell'archivio tra i rapporti.
+
+- PASS su host Linux. PowerShell ha renderizzato un archivio riscritto da Java e Java ha verificato quello creato da PowerShell. La prova usa il motore C e FFmpeg Linux.
+- PASS build APK ARM64 con firma di test e installer con eseguibili Windows x64. Gli hash sono distribuiti accanto ai pacchetti.
+- NON ESEGUITO. Installazione fisica su Windows e Realme, esecuzione Android autonoma, RAM, temperatura, aggiornamento con firma del proprietario e parità degli export nativi.
+- APERTO. Il formato M0.4 conserva i tre ingressi da renderizzare. Restano da completare il progetto editoriale revisionato nelle app, l'interfaccia completa, i dodici ruoli, le trenta animazioni, il montaggio multitraccia e la sincronizzazione Drive.
+
+Prima prova riproducibile in docs/ARCHIVIO-M0.4.md. Evidenze tecniche in qa/archivio-m04.md.

@@ -2,7 +2,7 @@
 function Measure-Export([string]$engine, [string]$path) {
     $start = New-Object System.Diagnostics.ProcessStartInfo
     $start.FileName = $engine
-    $arguments = @('-nostdin','-hide_banner','-i',$path,'-vf','blackdetect=d=0.032:pix_th=0.04',
+    $arguments = @('-nostdin','-hide_banner','-protocol_whitelist','file,pipe','-i',$path,'-vf','blackdetect=d=0.032:pix_th=0.04',
                    '-af','loudnorm=I=-16:TP=-1.5:LRA=8:print_format=json','-f','null','-')
     $start.Arguments = (($arguments | ForEach-Object { Quote-Arg $_ }) -join ' ')
     $start.UseShellExecute = $false

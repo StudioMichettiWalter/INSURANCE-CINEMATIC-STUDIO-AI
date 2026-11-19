@@ -1,4 +1,4 @@
-"""Confronto diagnostico delle esportazioni M0.3 generate con il kit sintetico."""
+"""Confronto diagnostico delle esportazioni M0 generate con il kit sintetico."""
 import argparse
 from hashlib import file_digest
 import json
@@ -63,14 +63,22 @@ def assess(windows, android, kit):
             raise ValueError('SRT di riferimento alterato')
         win = json_file(left / 'prova.json')
         android_report = json_file(right / 'qa.json')
-        if win['fixture'] != fixture['id'] or win['mode'] != 'srt':
-            raise ValueError('Per il confronto usare lo ZIP Windows creato senza -Automatico')
-        if android_report['platform'] != 'Android' or android_report['app_version'] != '0.1.0-m0.3':
-            raise ValueError('Per il confronto usare lo ZIP generato dall’app Android M0.3')
-        if android_report['captions_source'] != 'SRT importato manualmente':
-            raise ValueError('Su Android importare riferimento.srt prima del render')
-        if json_file(left / 'qa.json')['status'] != 'QA' or android_report['status'] != 'QA':
+        if win['fixture'] != fixture['id'] or win['mode'] not in ('srt', 'portabile'):
+            raise ValueError('Usare lo ZIP della prova SRT o portabile')
+        if android_report['platform'] != 'Android' or android_report['app_version'] not in ('0.1.0-m0.3', '0.1.0-m0.4'):
+            raise ValueError('Usare lo ZIP dell’app Android M0.3 o M0.4')
+        windows_report = json_file(left / 'qa.json')
+        if windows_report['status'] != 'QA' or android_report['status'] != 'QA':
             raise ValueError('Una verifica automatica è rimasta aperta o ha bloccato l’export')
+        if win['mode'] == 'portabile':
+            for report in (windows_report, android_report):
+                if report['input_bundle_sha256'] != fixture['project_sha256']:
+                    raise ValueError('Il progetto importato è diverso da quello del kit')
+            if android_report['captions_source'] != 'Archivio portabile':
+                raise ValueError('Su Android aprire direttamente lo ZIP portabile')
+            check_provenance(windows_report, left, fixture)
+        elif android_report['captions_source'] != 'SRT importato manualmente':
+            raise ValueError('Su Android importare riferimento.srt prima del render')
         check_provenance(win, left, fixture)
         check_provenance(android_report, right, fixture)
 
@@ -84,7 +92,7 @@ def assess(windows, android, kit):
                 compare.cues(folder / 'captions.srt', frames) == expected_cues)
         result.update(esito_tecnico='PASS' if all(checks.values()) else 'FAIL',
                       accettazione_m0='PENDENTE', approvazione_soglie='PENDENTE',
-                      fixture=fixture['id'], windows_os=win['os'],
+                      fixture=fixture['id'], modalita=win['mode'], windows_os=win['os'],
                       android_device=android_report.get('device'))
         return result
 

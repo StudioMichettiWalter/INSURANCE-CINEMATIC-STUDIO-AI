@@ -17,7 +17,7 @@ def main():
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix="studio-windows-qa-") as directory:
         temp = Path(directory)
-        for name in ["Export-M0.ps1", "LocalAi.ps1", "Quality.ps1"]:
+        for name in ["Export-M0.ps1", "LocalAi.ps1", "Quality.ps1", "PortableProject.ps1"]:
             shutil.copy(ROOT / "windows" / name, temp / name)
         shutil.copytree(ROOT / "brand", temp / "fonts")
         run(["cc", "-O2", "-std=c99", ROOT / "core/scene.c", ROOT / "core/render.c",

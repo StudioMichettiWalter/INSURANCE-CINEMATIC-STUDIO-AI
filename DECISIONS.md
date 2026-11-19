@@ -9,3 +9,7 @@ ADR 004 • Firma e compatibilità. Android minSdk 27 provvisorio, ABI ARM64 e t
 ADR 005 • Manifest. Il pacchetto originale contiene due documenti e nessun project_manifest.json. Il template v1 in data/ è un nuovo artefatto di sviluppo con schema e migrazione, non un documento recuperato dall'archivio.
 
 ADR 006 • Cue e correzione manuale M0.3. Il rendering Android mantiene i timestamp di segmento ASR. Un segmento oltre due righe viene bloccato per correzione con SRT importato dall'utente. Lo ZIP diagnostico conserva SRT effettivamente applicato e hash degli ingressi. Le misure loudness Android restano esplicitamente aperte.
+
+## Archivio media M0.4
+
+Il trasporto per una singola composizione usa ZIP con quattro nomi fissi. Il manifest ASCII `studio-render.txt` porta il marcatore `INSURANCE-STUDIO-RENDER/1` e gli SHA‑256 di `clip.mp4`, `voce.audio` e `captions.srt` in quest’ordine. La lettura estrae solo i nomi ammessi in una directory nuova. I limiti decodificati sono 768 MiB per la clip, 128 MiB per la voce, 1 MiB per i cue e 512 byte per il manifest. Lo ZIP è limitato a 1 GiB. La revisione di progetto con storyboard, risorse e approvazioni continua a seguire lo schema in data/.

@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param([string]$StudioDirectory = (Join-Path $env:LOCALAPPDATA 'InsuranceCinematicStudioM0'),
-      [string]$RuntimeConfig, [switch]$Automatico)
+      [string]$RuntimeConfig, [switch]$Automatico, [switch]$Progetto)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
@@ -17,14 +17,24 @@ if (!(Test-Path -LiteralPath $export -PathType Leaf)) {
     throw 'Installare Insurance-Studio-M0.3-Setup.exe prima del collaudo.'
 }
 
-$mode = if ($Automatico) { 'automatico' } else { 'srt' }
+if ($Automatico -and $Progetto) { throw 'Scegliere una sola modalita di prova.' }
+$mode = if ($Progetto) { 'portabile' } elseif ($Automatico) { 'automatico' } else { 'srt' }
 $id = [Guid]::NewGuid().ToString('N').Substring(0,8)
 $folder = Join-Path $PSScriptRoot ("Esito-Windows-$mode-$id")
 [void](New-Item -ItemType Directory -Path $folder)
 $master = Join-Path $folder 'master.mp4'
-$arguments = @('-Clip', (Join-Path $PSScriptRoot 'clip.mp4'),
-               '-Voce', (Join-Path $PSScriptRoot 'voce.wav'), '-Destinazione', $master)
-if (!$Automatico) { $arguments += @('-Sottotitoli', (Join-Path $PSScriptRoot 'riferimento.srt')) }
+$arguments = @('-Destinazione', $master)
+if ($Progetto) {
+    $archive = Join-Path $PSScriptRoot 'Progetto-Collaudo-M0.4.zip'
+    if ($fixture.project_file -cne 'Progetto-Collaudo-M0.4.zip' -or
+        (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -ine $fixture.project_sha256) {
+        throw 'Archivio portabile diverso dal kit.'
+    }
+    $arguments += @('-Progetto',$archive)
+} else {
+    $arguments += @('-Clip', (Join-Path $PSScriptRoot 'clip.mp4'), '-Voce', (Join-Path $PSScriptRoot 'voce.wav'))
+    if (!$Automatico) { $arguments += @('-Sottotitoli', (Join-Path $PSScriptRoot 'riferimento.srt')) }
+}
 if ($RuntimeConfig) { $arguments += @('-RuntimeConfig', (Resolve-Path -LiteralPath $RuntimeConfig).ProviderPath) }
 $powerShell = (Get-Process -Id $PID).Path
 $timer = [Diagnostics.Stopwatch]::StartNew()

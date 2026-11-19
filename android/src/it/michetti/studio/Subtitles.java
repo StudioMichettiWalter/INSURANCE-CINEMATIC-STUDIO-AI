@@ -58,6 +58,16 @@ final class Subtitles {
         if(sub.keyword==null)sub.keyword="";
         return sub;
     }
+    static Subtitles fromProject(Activity activity, String srt) throws IOException {
+        Subtitles subtitles=new Subtitles(activity);
+        subtitles.origin="Archivio portabile";
+        for(CaptionCue cue:CaptionSrt.parse(srt)) {
+            subtitles.original.add(cue);
+            subtitles.add(cue.text,cue.startMs,cue.endMs);
+        }
+        return subtitles;
+    }
+
     private void add(String text,long start,long end) throws IOException {
         if(text.trim().isEmpty())return;
         ArrayList<String> lines=new ArrayList<>();

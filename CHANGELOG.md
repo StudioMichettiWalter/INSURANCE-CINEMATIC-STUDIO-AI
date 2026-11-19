@@ -4,3 +4,9 @@ Prima consegna tecnica associata alla specifica v1.0. Conservati il mandato e la
 
 ## 0.1.0-m0.3
 Corretto il trattamento Android dei cue lunghi, introdotti import SRT corretto, export diagnostico ZIP e parser PCM RIFF verificato. Rafforzato il gate Windows sul file codificato, con normalizzazione in due passaggi e codifica AAC 192 kbit/s. Ricompilati i pacchetti di prova. Gate fisico M0 ancora aperto.
+
+## 0.1.0-m0.4
+
+- Archivio di lavorazione condiviso tra Windows e Android con clip, voce, cue SRT e controllo SHA-256.
+- Rapporti di render con hash dell’archivio usato e kit per il confronto dei due export.
+- Nuove build di prova e verifiche di scambio tra PowerShell e Java su host Linux.

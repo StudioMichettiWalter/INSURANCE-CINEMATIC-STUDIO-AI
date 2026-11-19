@@ -22,7 +22,7 @@ public final class Studio extends Activity {
     private volatile boolean cancelRequested;
     private TextView status;
     private EditText caption;
-    private Button clip,audio,make,save,saveBundle,stop;
+    private Button clip,audio,make,save,saveBundle,openProject,saveProject,stop;
     private SharedPreferences settings;
     private File assets;
 
@@ -60,6 +60,12 @@ public final class Studio extends Activity {
             }
             pick(14,"*/*");
         });
+        openProject=button(body,"Apri archivio portabile e renderizza",v->pick(15,"*/*"));
+        saveProject=button(body,"Salva archivio portabile",v->{
+            Intent i=new Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE)
+                    .setType("application/zip").putExtra(Intent.EXTRA_TITLE,"Progetto-Studio.zip");
+            startActivityForResult(i,16);
+        });
         make=button(body,"Renderizza MP4 verticale",v->startExport());
         stop=button(body,"Annulla render",v->{cancelRequested=true;Thread w=renderWorker;if(w!=null)w.interrupt();});
         save=button(body,"Salva ultimo MP4",v->{
@@ -94,11 +100,14 @@ public final class Studio extends Activity {
         make.setEnabled(available("clip") && available("audio"));stop.setEnabled(false);
         save.setEnabled(available("render"));
         saveBundle.setEnabled(available("bundle"));
+        openProject.setEnabled(true);
+        saveProject.setEnabled(available("clip") && available("audio"));
         status.setText("Clip "+(available("clip")?"importata":"mancante")+" · Voce "+(available("audio")?"importata":"mancante"));
     }
     private void busy(boolean cancellable) {
         clip.setEnabled(false); audio.setEnabled(false); make.setEnabled(false);
         save.setEnabled(false); saveBundle.setEnabled(false); stop.setEnabled(cancellable);
+        openProject.setEnabled(false); saveProject.setEnabled(false);
     }
     private void pick(int request,String type) {
         startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType(type),request);
@@ -138,6 +147,14 @@ public final class Studio extends Activity {
         if(request==11){ModelPanel.onResult(this,request,data);return;}
         if(request==12 || request==13){AsrPanel.onResult(this,request,data);return;}
         Uri uri=data.getData();
+        if(request==15) {
+            task(true,()->renderProject(uri));
+            return;
+        }
+        if(request==16) {
+            task(false,()->saveProject(uri));
+            return;
+        }
         if(request==14) {
             File voice=file("audio");
             if(voice==null || !voice.isFile())return;
@@ -208,41 +225,79 @@ public final class Studio extends Activity {
             } finally {tmp.delete();}
         });
     }
+    private String saveProject(Uri destination) throws Exception {
+        File staged=File.createTempFile("progetto-",".zip",getCacheDir());
+        try {
+            File voice=file("audio");
+            Subtitles subtitles=Subtitles.read(this,voice,"");
+            PortableProject.write(file("clip"),voice,subtitles.srt(),staged);
+            try(InputStream in=new FileInputStream(staged);
+                OutputStream out=getContentResolver().openOutputStream(destination,"wt")) {
+                if(out==null)throw new IOException("Destinazione non disponibile.");
+                copy(in,out,null);
+            }
+            return "Archivio portabile salvato.";
+        } finally {staged.delete();}
+    }
+
+    private String renderProject(Uri uri) throws Exception {
+        File staged=File.createTempFile("importa-progetto-",".zip",getCacheDir());
+        File directory=java.nio.file.Files.createTempDirectory(getCacheDir().toPath(),"media-progetto-").toFile();
+        try {
+            try(InputStream in=getContentResolver().openInputStream(uri);
+                OutputStream out=new FileOutputStream(staged)) {
+                if(in==null)throw new IOException("Archivio non disponibile.");
+                PortableProject.transfer(in,out,PortableProject.MAX_ARCHIVE,null);
+            }
+            PortableProject project=PortableProject.read(staged,directory);
+            staged.delete();
+            return render(project.clip,project.voice,Subtitles.fromProject(this,project.srt),project.archiveSha256);
+        } finally {
+            staged.delete();
+            File[] files=directory.listFiles();
+            if(files!=null)for(File file:files)file.delete();
+            directory.delete();
+        }
+    }
+
     private void startExport() {
         String text=caption.getText().toString().trim();
         task(true,()->{
-            if(!M0Memory.acquire())throw new IOException("Attendere il completamento dell’altro lavoro locale.");
-            File temp=null,bundleTemp=null,finalFile=null,finalBundle=null;
-            boolean committed=false;
-            try {
-                temp=File.createTempFile("render-",".part",assets);
-                File voice=file("audio");
-                Subtitles subs=Subtitles.read(this,voice,text);
-                Export.run(file("clip"),voice,subs,temp,(i,n)->{
-                    if(i%5==0 || i==n)runOnUiThread(()->status.setText("Fotogramma "+i+" di "+n));
-                });
-                String exportId=UUID.randomUUID().toString();
-                finalFile=new File(assets,exportId+".mp4");
-                finalBundle=new File(assets,exportId+".zip");
-                bundleTemp=File.createTempFile("bundle-",".part",assets);
-                ExportBundle.write(temp,file("clip"),voice,subs,bundleTemp);
-                if(!temp.renameTo(finalFile))throw new IOException("Spazio o permessi insufficienti.");
-                if(!bundleTemp.renameTo(finalBundle))throw new IOException("Salvataggio archivio fallito.");
-                if(!settings.edit().putString("render",finalFile.getName())
-                        .putString("bundle",finalBundle.getName()).commit())
-                    throw new IOException("Salvataggio dei riferimenti export fallito.");
-                committed=true;
-                return "Render verificato. Salva il video oppure lo ZIP con SRT e rapporto. Revisione umana da completare.";
-            } finally {
-                if(temp!=null)temp.delete();
-                if(bundleTemp!=null)bundleTemp.delete();
-                if(!committed) {
-                    if(finalFile!=null)finalFile.delete();
-                    if(finalBundle!=null)finalBundle.delete();
-                }
-                M0Memory.release();
-            }
+            File voice=file("audio");
+            return render(file("clip"),voice,Subtitles.read(this,voice,text),null);
         });
+    }
+
+    private String render(File video,File voice,Subtitles subtitles,String projectHash) throws Exception {
+        if(!M0Memory.acquire())throw new IOException("Attendere il completamento dell’altro lavoro locale.");
+        File temp=null,bundleTemp=null,finalFile=null,finalBundle=null;
+        boolean committed=false;
+        try {
+            temp=File.createTempFile("render-",".part",assets);
+            Export.run(video,voice,subtitles,temp,(i,n)->{
+                if(i%5==0 || i==n)runOnUiThread(()->status.setText("Fotogramma "+i+" di "+n));
+            });
+            String exportId=UUID.randomUUID().toString();
+            finalFile=new File(assets,exportId+".mp4");
+            finalBundle=new File(assets,exportId+".zip");
+            bundleTemp=File.createTempFile("bundle-",".part",assets);
+            ExportBundle.write(temp,video,voice,subtitles,projectHash,bundleTemp);
+            if(!temp.renameTo(finalFile))throw new IOException("Spazio o permessi insufficienti.");
+            if(!bundleTemp.renameTo(finalBundle))throw new IOException("Salvataggio archivio fallito.");
+            if(!settings.edit().putString("render",finalFile.getName())
+                    .putString("bundle",finalBundle.getName()).commit())
+                throw new IOException("Salvataggio dei riferimenti export fallito.");
+            committed=true;
+            return "Render verificato. Salva il video oppure lo ZIP con SRT e rapporto. Revisione umana da completare.";
+        } finally {
+            if(temp!=null)temp.delete();
+            if(bundleTemp!=null)bundleTemp.delete();
+            if(!committed) {
+                if(finalFile!=null)finalFile.delete();
+                if(finalBundle!=null)finalBundle.delete();
+            }
+            M0Memory.release();
+        }
     }
     @Override public void onDestroy(){jobs.shutdownNow();AsrPanel.detach(this);super.onDestroy();}
 }

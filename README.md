@@ -2,7 +2,7 @@
 
 [Scarica i pacchetti Windows, Android e i modelli](https://github.com/StudioMichettiWalter/INSURANCE-CINEMATIC-STUDIO-AI/tree/insurance-studio-download). Nella pagina aprire **Code > Download ZIP**, estrarre la cartella e seguire README.md. Per i modelli usare Ricostruisci-Modelli.ps1.
 
-Per la prima prova su Windows 11 e Realme, usa il [kit M0.3 con clip, voce e sottotitoli di riferimento](docs/COLLAUDO-RAPIDO.md).
+Per la prima prova su Windows 11 e Realme usa il [kit con archivio portabile M0.4](docs/ARCHIVIO-M0.4.md).
 **Checkpoint tecnico 0.1.0-m0.3 per Walter Michetti.** Iniziare da STATUS.md per gli esiti. La specifica accettata e le preferenze editoriali originali sono conservate integralmente in source/. La scheda installabile delle regole è docs/regole-prodotto.json. Il template manifest v1 è stato scritto per questo repository perché mancava nello ZIP originale.
 
 ## Uso dei pacchetti di prova

@@ -1,11 +1,13 @@
 [CmdletBinding()]
 param([string]$Clip, [string]$Voce, [string]$Sottotitoli, [string]$Destinazione,
-      [string]$Whisper, [string]$ModelloAsr, [string]$Llama, [string]$ModelloLlm, [string]$RuntimeConfig)
+      [string]$Whisper, [string]$ModelloAsr, [string]$Llama, [string]$ModelloLlm, [string]$RuntimeConfig,
+      [string]$Progetto, [string]$SalvaProgetto)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $interactive = $PSBoundParameters.Count -eq 0
 . (Join-Path $PSScriptRoot 'LocalAi.ps1')
 . (Join-Path $PSScriptRoot 'Quality.ps1')
+. (Join-Path $PSScriptRoot 'PortableProject.ps1')
 
 function Select-Path([string]$title, [string]$filter, [bool]$save) {
     $dialog = if ($save) { New-Object System.Windows.Forms.SaveFileDialog } else { New-Object System.Windows.Forms.OpenFileDialog }
@@ -17,7 +19,11 @@ function Select-Path([string]$title, [string]$filter, [bool]$save) {
     } finally { $dialog.Dispose() }
 }
 function Probe([string]$file) {
-    $result = & $probe -v error -show_streams -show_format -of json -i $file
+    $formats = @()
+    if ($project -and $file -in @($project.Clip,$project.Voce)) {
+        $formats = @('-format_whitelist','mov,wav')
+    }
+    $result = & $probe -v error -protocol_whitelist file,pipe @formats -show_streams -show_format -of json -i $file
     if ($LASTEXITCODE -ne 0) { throw "ffprobe non legge il file $file" }
     return ($result | Out-String | ConvertFrom-Json)
 }
@@ -40,6 +46,7 @@ $scratchDir = $null
 $partial = $null
 $renderer = $null
 $encoder = $null
+$project = $null
 try {
     $settings = $null
     if (!$RuntimeConfig -and $env:LOCALAPPDATA) {
@@ -49,19 +56,49 @@ try {
     if ($RuntimeConfig) { $settings = [IO.File]::ReadAllText((Resolve-Path -LiteralPath $RuntimeConfig).ProviderPath) | ConvertFrom-Json }
     if ($interactive) {
         Add-Type -AssemblyName System.Windows.Forms
-        $Clip = Select-Path '1. Clip video' 'Video|*.mp4;*.mov' $false
-        $Voce = Select-Path '2. Traccia narrante' 'Audio|*.wav;*.mp3;*.m4a' $false
-        $automatic = [System.Windows.Forms.MessageBox]::Show('Eseguire ASR e inferenza sul PC? Scegliere No per usare un SRT esistente.', 'Elaborazione locale', 'YesNoCancel')
-        if ($automatic -eq 'Cancel') { throw 'Operazione annullata.' }
-        if ($automatic -eq 'Yes' -and !$settings) {
-            $Whisper = Select-Path 'whisper-cli.exe v1.7.6' 'Whisper|whisper-cli.exe' $false
-            $ModelloAsr = Select-Path 'Modello Whisper small Q5_1' 'Modello|*.bin' $false
-            $Llama = Select-Path 'llama-cli.exe b6000' 'Llama|llama-cli.exe' $false
-            $ModelloLlm = Select-Path 'Modello Qwen2.5 0.5B Q4_K_M' 'Modello|*.gguf' $false
-        } elseif ($automatic -eq 'No') { $Sottotitoli = Select-Path '3. Sottotitoli con tempi approvati' 'Sottotitoli|*.srt' $false }
-        $Destinazione = Select-Path '4. Nuovo file master' 'Video MPEG-4|*.mp4' $true
+        $open = [System.Windows.Forms.MessageBox]::Show('Aprire un archivio portabile? Scegliere No per selezionare i singoli file.', 'Studio M0', 'YesNoCancel')
+        if ($open -eq 'Cancel') { throw 'Operazione annullata.' }
+        if ($open -eq 'Yes') {
+            $Progetto = Select-Path 'Apri archivio portabile' 'Progetto Studio ZIP|*.zip' $false
+        } else {
+            $Clip = Select-Path '1. Clip video' 'Video|*.mp4;*.mov' $false
+            $Voce = Select-Path '2. Traccia narrante' 'Audio|*.wav;*.mp3;*.m4a' $false
+            $automatic = [System.Windows.Forms.MessageBox]::Show('Eseguire ASR e inferenza sul PC? Scegliere No per usare un SRT esistente.', 'Elaborazione locale', 'YesNoCancel')
+            if ($automatic -eq 'Cancel') { throw 'Operazione annullata.' }
+            if ($automatic -eq 'Yes' -and !$settings) {
+                $Whisper = Select-Path 'whisper-cli.exe v1.7.6' 'Whisper|whisper-cli.exe' $false
+                $ModelloAsr = Select-Path 'Modello Whisper small Q5_1' 'Modello|*.bin' $false
+                $Llama = Select-Path 'llama-cli.exe b6000' 'Llama|llama-cli.exe' $false
+                $ModelloLlm = Select-Path 'Modello Qwen2.5 0.5B Q4_K_M' 'Modello|*.gguf' $false
+            } elseif ($automatic -eq 'No') { $Sottotitoli = Select-Path '3. Sottotitoli con tempi approvati' 'Sottotitoli|*.srt' $false }
+        }
+        $Destinazione = Select-Path 'Nuovo file master' 'Video MPEG-4|*.mp4' $true
+        if ($Sottotitoli) {
+            $saveProject = [System.Windows.Forms.MessageBox]::Show('Salvare anche un archivio portabile per Android?', 'Studio M0', 'YesNo')
+            if ($saveProject -eq 'Yes') { $SalvaProgetto = Select-Path 'Nuovo progetto portabile' 'Progetto Studio ZIP|*.zip' $true }
+        }
     }
-    if (!$Clip -or !$Voce -or !$Destinazione) { throw 'Indicare Clip, Voce e Destinazione.' }
+    $job = [Guid]::NewGuid().ToString('N')
+    $scratchDir = Join-Path ([IO.Path]::GetTempPath()) "studio-$job"
+    [void][IO.Directory]::CreateDirectory($scratchDir)
+    if ($Progetto) {
+        if ($Clip -or $Voce -or $Sottotitoli -or $Whisper -or $Llama -or $ModelloAsr -or $ModelloLlm -or $SalvaProgetto) {
+            throw 'Indicare l''archivio portabile come unico ingresso.'
+        }
+        $projectDir = Join-Path $scratchDir 'progetto'
+        [void][IO.Directory]::CreateDirectory($projectDir)
+        $project = Read-PortableProject ((Resolve-Path -LiteralPath $Progetto).ProviderPath) $projectDir
+        $Clip = $project.Clip
+        $Voce = $project.Voce
+        $Sottotitoli = $project.Sottotitoli
+    }
+    if (!$Clip -or !$Voce -or !$Destinazione) { throw 'Indicare clip, voce e destinazione oppure archivio e destinazione.' }
+    if ($SalvaProgetto) {
+        $SalvaProgetto = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($SalvaProgetto)
+        if ([IO.Path]::GetExtension($SalvaProgetto) -ine '.zip' -or (Test-Path -LiteralPath $SalvaProgetto)) {
+            throw 'Scegliere un file ZIP nuovo per l''archivio portabile.'
+        }
+    }
     if ($settings) {
         $ffmpeg = $settings.Ffmpeg
         $probe = $settings.Ffprobe
@@ -91,9 +128,6 @@ try {
         $frames = [int][Math]::Ceiling($seconds * 30)
     } else { throw 'La durata della voce deve essere leggibile e compresa entro 300 secondi nello spike.' }
     $duration = ($frames / 30).ToString('0.000000000', $culture)
-    $job = [Guid]::NewGuid().ToString('N')
-    $scratchDir = Join-Path ([IO.Path]::GetTempPath()) "studio-$job"
-    [void][IO.Directory]::CreateDirectory($scratchDir)
     $cuePath = Join-Path $scratchDir 'captions.srt'
     if ($Sottotitoli) {
         Copy-Item -LiteralPath $Sottotitoli -Destination $cuePath
@@ -101,7 +135,7 @@ try {
         $lock = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'asr.lock.json')) | ConvertFrom-Json
         Assert-Model $ModelloAsr $lock.model.sha256
         $wav = Join-Path $scratchDir 'asr.wav'
-        & $ffmpeg -loglevel error -nostdin -i $Voce -map 0:a:0 -ac 1 -ar 16000 -c:a pcm_s16le $wav
+        & $ffmpeg -loglevel error -nostdin -protocol_whitelist file,pipe -i $Voce -map 0:a:0 -ac 1 -ar 16000 -c:a pcm_s16le $wav
         if ($LASTEXITCODE -ne 0) { throw 'Conversione PCM per ASR fallita.' }
         & $Whisper -m $ModelloAsr -f $wav -l it -t 2 -ng -ml 48 -sow -osrt -of (Join-Path $scratchDir 'captions')
         if ($LASTEXITCODE -ne 0) { throw 'Whisper non ha trascritto la voce.' }
@@ -131,7 +165,10 @@ try {
     $normalizer = "loudnorm=I=-16:TP=-1.5:LRA=8:linear=true:measured_I=$($m.input_i):measured_TP=$($m.input_tp):measured_LRA=$($m.input_lra):measured_thresh=$($m.input_thresh):offset=$($m.target_offset),apad"
     $partial = Join-Path ([IO.Path]::GetDirectoryName($out)) ".$job.partial.mp4"
     $filters = "[0:v:0]fps=30,scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:0x0A1628,setsar=1,tpad=stop_mode=clone:stop_duration=$duration[bg];[bg][2:v]overlay=(W-w)/2:(H-h)/2,ass=captions.ass:fontsdir=fonts[v]"
-    $arguments = @('-hide_banner','-loglevel','warning','-n','-i',$Clip,'-i',$Voce,'-f','rawvideo','-pixel_format','rgba','-video_size','1080x1920','-framerate','30','-i','pipe:0','-filter_complex',$filters,'-map','[v]','-map','1:a:0','-af',$normalizer,'-t',$duration,'-c:v','libx264','-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-ar','48000','-movflags','+faststart',$partial)
+    $mediaOptions = @('-protocol_whitelist','file,pipe')
+    if ($project) { $mediaOptions += @('-format_whitelist','mov,wav') }
+    $arguments = @('-hide_banner','-loglevel','warning','-n') + $mediaOptions + @('-i',$Clip) +
+        $mediaOptions + @('-i',$Voce,'-f','rawvideo','-pixel_format','rgba','-video_size','1080x1920','-framerate','30','-i','pipe:0','-filter_complex',$filters,'-map','[v]','-map','1:a:0','-af',$normalizer,'-t',$duration,'-c:v','libx264','-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-ar','48000','-movflags','+faststart',$partial)
     Write-Host "Render locale di $frames fotogrammi. Ctrl+C per interrompere."
     $encoder = Start-Tool $ffmpeg $arguments $scratchDir $false $true
     $renderer = Start-Tool (Join-Path $PSScriptRoot 'scene-frames.exe') @('1080','1920',"$frames") $scratchDir $true $false
@@ -161,15 +198,31 @@ try {
         Write-Text $failureReport ($quality | ConvertTo-Json -Depth 6)
         throw "QA materiale fallita. Consultare $failureReport e correggere livelli audio o fotogrammi neri."
     }
+    if ($project) {
+        $hashes = Get-PortableHashes $Clip $Voce $cuePath
+        $quality['input_bundle_sha256'] = $project.archive_sha256
+        $quality['clip_sha256'] = $hashes['clip.mp4']
+        $quality['voice_sha256'] = $hashes['voce.audio']
+        $quality['master_sha256'] = (Get-FileHash -LiteralPath $partial -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
     $report = "$out.$job"
     [void][IO.Directory]::CreateDirectory($report)
+    $savedProject = $false
     try {
         [IO.File]::Copy($cuePath, (Join-Path $report 'sottotitoli.srt'))
         if ($inference) { Write-Text (Join-Path $report 'inferenza.json') ($inference | ConvertTo-Json -Depth 5) }
         Write-Text (Join-Path $report 'qa.json') ($quality | ConvertTo-Json -Depth 6)
         Write-Text (Join-Path $report 'ffprobe.json') ($media | ConvertTo-Json -Depth 10)
+        if ($SalvaProgetto) {
+            Write-PortableProject $Clip $Voce $cuePath $SalvaProgetto
+            $savedProject = $true
+        }
         [IO.File]::Move($partial, $out)
-    } catch { [IO.Directory]::Delete($report, $true); throw }
+    } catch {
+        if ($savedProject) { [IO.File]::Delete($SalvaProgetto) }
+        [IO.Directory]::Delete($report, $true)
+        throw
+    }
     Write-Host "Esportato: $out"
     if ($interactive) { [void][System.Windows.Forms.MessageBox]::Show("File verificato: $out", 'Studio M0') }
 } catch {
