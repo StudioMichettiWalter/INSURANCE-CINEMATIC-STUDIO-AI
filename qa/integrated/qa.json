@@ -1,0 +1,41 @@
+{
+  "host": "Linux",
+  "frames": 99,
+  "checks": {
+    "video": true,
+    "numero_frame": true,
+    "timestamp_cfr": true,
+    "audio": true,
+    "durata_audio": true,
+    "true_peak": true,
+    "loudness": true,
+    "nessun_frame_nero": true
+  },
+  "audio_measurements": {
+    "input_i": "-16.86",
+    "input_tp": "-1.35",
+    "input_lra": "1.10",
+    "input_thresh": "-26.86",
+    "output_i": "-15.97",
+    "output_tp": "-1.50",
+    "output_lra": "0.00",
+    "output_thresh": "-25.97",
+    "normalization_type": "dynamic",
+    "target_offset": "-0.03"
+  },
+  "elapsed_seconds": 35.115,
+  "renderer_resolution": [
+    1080,
+    1920
+  ],
+  "master_bytes": 2570538,
+  "input_sha256": {
+    "clip": "c85ac9da80d0a680484a94fcac4328ed64349f883f3d8d5549681e5597e0bb3a",
+    "voice": "8a220c5750d4ad2807e1b5a7345b7d578cfe750af0e04634a0ea251b72acc196",
+    "srt": "945d00b2c2bc7e5daf72166a59ef05ea4208f33404fc7d5ca1b484ad5494efd7",
+    "renderer": "28c262650260f4b6f53c7aa73c6fc995b6b5b137665c61f0302defa02d16cd29"
+  },
+  "master_sha256": "c6d9053d3f49a6548030cdf4153b0271711e3f81c8e979199394ecdf123d73b4",
+  "keyword": "condizioni",
+  "revisione_umana": "NON ESEGUITO"
+}

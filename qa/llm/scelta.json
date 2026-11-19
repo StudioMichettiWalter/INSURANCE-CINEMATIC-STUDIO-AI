@@ -1,0 +1,16 @@
+{
+  "keyword": "clausola",
+  "title": "scegliere la polizza",
+  "role": "Video Editor",
+  "status": "PROPOSED",
+  "model": "Qwen2.5-0.5B-Instruct-Q4_K_M",
+  "model_sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db",
+  "engine": "llama.cpp b6000",
+  "prompt_sha256": "4470d2b183a905cc00b25b47afa161820b049ab43c4b4ea34f86ccd6f3842358",
+  "transcript_sha256": "05a7099d8389a2b32064f866e421c3828489f8d43d7b6488395af8e09f74d522",
+  "seconds": 1.879,
+  "sources": [
+    "trascrizione locale"
+  ],
+  "decision": "Proposta estrattiva per titolo e sottotitoli, da approvare."
+}

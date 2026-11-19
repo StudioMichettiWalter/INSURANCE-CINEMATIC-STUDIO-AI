@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "project_id": "503d79ef-de06-4493-99d5-233c95badd1c",
+  "title": "Nuovo progetto",
+  "revision": 1,
+  "parent_sha256": null,
+  "status": "PREPRODUCTION",
+  "fps": 30,
+  "locale": "it-IT",
+  "brand": {
+    "navy": "#0A1628",
+    "gold": "#E6C777",
+    "ivory": "#F6F1E3"
+  },
+  "assets": [],
+  "script": "",
+  "storyboard": [],
+  "prompts": [],
+  "sources": []
+}

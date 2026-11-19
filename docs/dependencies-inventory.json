@@ -1,0 +1,86 @@
+{
+  "version": "0.1.0-m0.1",
+  "scope": "Inventario sviluppo e spike, revisione release aperta",
+  "components": [
+    {
+      "lockfile": "asr/asr.lock.json",
+      "sha256": "e9668e04b9c5b5662c4238c2aca8a336ae8a79a2cf2ddfcc4a635139664014a4",
+      "entries": {
+        "engine": {
+          "version": "whisper.cpp v1.7.6",
+          "url": "https://codeload.github.com/ggml-org/whisper.cpp/tar.gz/refs/tags/v1.7.6",
+          "sha256": "166140e9a6d8a36f787a2bd77f8f44dd64874f12dd8359ff7c1f4f9acb86202e",
+          "license": "MIT"
+        },
+        "model": {
+          "version": "OpenAI Whisper small multilingual, ggml Q5_1",
+          "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-small-q5_1.bin",
+          "sha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+          "bytes": 190085487,
+          "license": "MIT",
+          "license_evidence": "https://github.com/openai/whisper/blob/v20250625/README.md#license"
+        },
+        "rejected_tiny": {
+          "version": "OpenAI Whisper tiny multilingual, ggml f16",
+          "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-tiny.bin",
+          "sha256": "be07e048e1e599ad46341c8d2a135645097a538221678b7acdd1b1919c6e1b21",
+          "bytes": 77691713,
+          "license": "MIT",
+          "license_evidence": "https://github.com/openai/whisper/blob/v20250625/README.md#license"
+        },
+        "windows_cli": {
+          "version": "v1.7.6 Windows x64 CPU",
+          "url": "https://github.com/ggml-org/whisper.cpp/releases/download/v1.7.6/whisper-bin-x64.zip",
+          "sha256": "0d2eca299c248f965bd0341bcb219db4b433c7f0c0ce2200d4df85765e8156a9"
+        },
+        "weights_notice": {
+          "file": "licenses/whisper-weights-MIT.txt",
+          "sha256": "b5d65a59060e68c4ff940e1eddfa6f94b2d68fdf58ed7f4dd57721c997e35e9d"
+        },
+        "engine_notice": {
+          "file": "licenses/whisper.cpp-MIT.txt",
+          "sha256": "e562a2ddfaf8280537795ac5ecd34e3012b6582a147ef69ba6a6a5c08c84757d"
+        }
+      }
+    },
+    {
+      "lockfile": "llm/dependencies.lock.json",
+      "sha256": "267f061ffc9b8bb7794d706b49745af99e1c963199d660e49cfd7025f3c3f321",
+      "entries": {
+        "model": {
+          "url": "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/9217f5db79a29953eb74d5343926648285ec7e67/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+          "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db",
+          "license": "Apache-2.0"
+        },
+        "linux": {
+          "url": "https://github.com/ggml-org/llama.cpp/releases/download/b6000/llama-b6000-bin-ubuntu-x64.zip",
+          "sha256": "66244356dd242ae3a2510929ec4a840db65a3f9e7ad712918dbf02a266badfa5"
+        },
+        "windows": {
+          "url": "https://github.com/ggml-org/llama.cpp/releases/download/b6000/llama-b6000-bin-win-cpu-x64.zip",
+          "sha256": "b32ae2698268562f951c983cac8333607b9d5b546de17fd800a02fbc58b06b6d"
+        }
+      }
+    },
+    {
+      "lockfile": "windows/windows.lock.json",
+      "sha256": "d91aaeb661bce8ad843ed5d3f5d60e20234320584ba329985f8810f6a48cd1e3",
+      "entries": {
+        "ffmpeg": {
+          "url": "https://github.com/GyanD/codexffmpeg/releases/download/9.0.2/ffmpeg-9.0.2-essentials_build.zip",
+          "sha256": "60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba",
+          "upstream": "https://ffmpeg.org/download.html",
+          "version": "9.0.2",
+          "distribution": "Gyan.dev essentials, esterno al setup"
+        },
+        "compiler": {
+          "version": "LLVM-MinGW 20261117 UCRT",
+          "sha256": "e7a15a49a2ea95e9f3d8a9d0cfabe5052a4b10fb4777cc54de5a8c27b64bb701"
+        },
+        "packager": {
+          "version": "NSIS Debian 3.11-1"
+        }
+      }
+    }
+  ]
+}

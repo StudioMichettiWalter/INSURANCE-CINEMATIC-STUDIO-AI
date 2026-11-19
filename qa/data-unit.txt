@@ -1,0 +1,13 @@
+test_digest_source (test_projects.Projects.test_digest_source) ... ok
+test_history_backup_restore (test_projects.Projects.test_history_backup_restore) ... ok
+test_no_arbitrary_path (test_projects.Projects.test_no_arbitrary_path) ... ok
+test_reject_duplicate_keys (test_projects.Projects.test_reject_duplicate_keys) ... ok
+test_schema_and_template (test_projects.Projects.test_schema_and_template) ... ok
+test_stale_edit (test_projects.Projects.test_stale_edit) ... ok
+test_unknown_db_version (test_projects.Projects.test_unknown_db_version) ... ok
+test_untrusted_zip (test_projects.Projects.test_untrusted_zip) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.091s
+
+OK

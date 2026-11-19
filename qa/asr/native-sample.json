@@ -1,0 +1,6 @@
+{
+  "platform": "Linux x86_64",
+  "process": "studio_asr_test",
+  "vm_hwm_kib": 608080,
+  "note": "Massimo osservato fino al campione, solo processo ASR."
+}

@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="it.michetti.studio" android:versionCode="1" android:versionName="0.1.0-m0">
+  <uses-sdk android:minSdkVersion="27" android:targetSdkVersion="35"/>
+  <uses-feature android:name="android.hardware.touchscreen" android:required="false"/>
+  <application android:allowBackup="false" android:label="Studio assicurativo · prova M0" android:theme="@android:style/Theme.Material.NoActionBar">
+    <activity android:name=".Studio" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity>
+  </application>
+</manifest>

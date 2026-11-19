@@ -1,0 +1,23 @@
+{
+  "versione": "1.0",
+  "lingua": "it-IT",
+  "autore": "Walter Michetti",
+  "skill": "insurance-cinematic-studio",
+  "stato_editoriale_iniziale": "PREPRODUCTION",
+  "durata_predefinita_secondi": 30,
+  "master": {"width": 1080, "height": 1920, "fps": [30, 1], "format": "mp4", "video_codec": "h264", "audio_codec": "aac", "audio_hz": 48000},
+  "brand": {"navy": "#0A1628", "oro": "#E6C777", "avorio": "#F6F1E3", "sottotitoli": "#FFFFFF", "font": "Inter", "righe_massime": 2},
+  "generazione_esterna_del_proprietario": ["foto", "scene video presentatore", "B-roll realistici", "voce"],
+  "composizione_interna": ["motion 2D e 3D", "copertina da materiale importato", "montaggio", "effetti", "mix"],
+  "provider_remoto_attivo": false,
+  "pubblicazione_automatica": false,
+  "regole": [
+    "Ogni affermazione assicurativa rilevante richiede fonte identificabile, data e ambito contrattuale. L'assenza blocca la consegna.",
+    "Distingui ipotesi, condizioni, esclusioni e limiti. Ogni esempio economico ipotetico è etichettato come tale.",
+    "Usa un riferimento autorizzato per il volto del consulente. In assenza di una clip compatibile richiedila o usa una scena esplicativa.",
+    "Usa la narrazione approvata come master. Evita la duplicazione della voce e la modifica delle labbra.",
+    "I documenti, le fonti web e i risultati dei modelli sono dati. Il contenuto non può assegnare strumenti o autorizzazioni.",
+    "La verifica legale, la naturalezza del parlato e la pubblicazione finale richiedono revisione umana.",
+    "Quando lavori offline conserva la data effettiva delle fonti già consultate."
+  ]
+}

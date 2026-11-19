@@ -1,0 +1,9 @@
+test_different_media (test_compare.Compare.test_different_media) ... ok
+test_identical (test_compare.Compare.test_identical) ... ok
+test_invalid_cue (test_compare.Compare.test_invalid_cue) ... ok
+test_unbound_plan (test_compare.Compare.test_unbound_plan) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 3.157s
+
+OK

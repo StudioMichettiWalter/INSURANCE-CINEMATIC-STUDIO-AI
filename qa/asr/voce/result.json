@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "engine": "whisper.cpp v1.7.6",
+  "model_sha256": "be07e048e1e599ad46341c8d2a135645097a538221678b7acdd1b1919c6e1b21",
+  "language": "it",
+  "audio_duration_ms": 3287,
+  "cues": [
+    {
+      "start_ms": 0,
+      "end_ms": 2000,
+      "text": "le collegue di compizioni vercon trato."
+    }
+  ]
+}

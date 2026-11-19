@@ -1,0 +1,10 @@
+test_bounded (__main__.ExtractiveTests.test_bounded) ... ok
+test_empty (__main__.ExtractiveTests.test_empty) ... ok
+test_golden_structure (__main__.ExtractiveTests.test_golden_structure) ... ok
+test_model_rejected_before_execution (__main__.ExtractiveTests.test_model_rejected_before_execution) ... ok
+test_untrusted (__main__.ExtractiveTests.test_untrusted) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.002s
+
+OK

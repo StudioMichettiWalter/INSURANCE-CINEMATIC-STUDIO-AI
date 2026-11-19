@@ -1,0 +1,20 @@
+Generating 3,072 bit RSA key pair and self-signed certificate (SHA384withRSA) with a validity of 30 days
+	for: CN=Studio M0 TEST ONLY
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=Studio M0 TEST ONLY
+Signer #1 certificate SHA-256 digest: 9d2c370192943ec0176980bc40ff024c9b63abf7e9c9a795b6ca95b077eace5b
+Signer #1 certificate SHA-1 digest: d4a68337ddef390e3249d4294ad5670bd83d6dad
+Signer #1 certificate MD5 digest: 99a7ea87ebc9ce61ec296a6680c1358f
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 3072
+Signer #1 public key SHA-256 digest: 236ad64d6f348046e18d790bdc6fa70c9e774c7e605d4da24a5c5c23cd10770c
+Signer #1 public key SHA-1 digest: b998fb7f316f878b1fcd47a970582996735665b0
+Signer #1 public key MD5 digest: 642746c95170452f333539a743b70a83
+38914ebf3b644d3ec69735a288df89d7e69f34180193683f5583943b7cb4cf64  /workspace/work/android-tools/Studio-M0-arm64-test.apk

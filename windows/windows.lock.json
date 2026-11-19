@@ -1,0 +1,16 @@
+{
+  "ffmpeg": {
+    "url": "https://github.com/GyanD/codexffmpeg/releases/download/9.0.2/ffmpeg-9.0.2-essentials_build.zip",
+    "sha256": "60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba",
+    "upstream": "https://ffmpeg.org/download.html",
+    "version": "9.0.2",
+    "distribution": "Gyan.dev essentials, esterno al setup"
+  },
+  "compiler": {
+    "version": "LLVM-MinGW 20261117 UCRT",
+    "sha256": "e7a15a49a2ea95e9f3d8a9d0cfabe5052a4b10fb4777cc54de5a8c27b64bb701"
+  },
+  "packager": {
+    "version": "NSIS Debian 3.11-1"
+  }
+}
