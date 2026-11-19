@@ -1,6 +1,16 @@
 # Pacchetti Insurance Cinematic Studio AI
 
-## Checkpoint corrente M0.3
+## Checkpoint corrente M0.4
+
+- [Installer Windows](Insurance-Studio-M0.4-Setup.exe)
+- [APK ARM64 con firma di prova](Studio-M0.4-arm64-test.apk)
+- [Kit di collaudo con archivio condiviso](Kit-Collaudo-M0.4.zip)
+- [Sorgenti](Insurance-Cinematic-Studio-M0.4-sorgenti.zip)
+- [Hash SHA-256](SHA256SUMS-M0.4.txt) e [stato delle prove](STATUS-M0.4.md)
+
+Per ogni file usare **Download raw file**. Per aprire lo stesso archivio su Windows e Android seguire la [guida M0.4](https://github.com/StudioMichettiWalter/INSURANCE-CINEMATIC-STUDIO-AI/blob/main/docs/ARCHIVIO-M0.4.md). Restano il collaudo fisico e le milestone indicate nel rapporto.
+
+## Checkpoint M0.3
 - [Kit per la prima prova Windows e Realme](Kit-Collaudo-M0.3.zip), con clip, voce, SRT e guida. Aprire il file e usare **Download raw file** per scaricare solo il kit.
 - Windows x64: Insurance-Studio-M0.3-Setup.exe.
 - Android ARM64: Studio-M0.3-r1-arm64-test.apk, firma effimera di test.

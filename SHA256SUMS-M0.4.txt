@@ -1,0 +1,5 @@
+8e5774947dff0b34a9835bd4de23f5dcbeac00a572d8bd4aa48360129b9949ec  Insurance-Studio-M0.4-Setup.exe
+d2d6e409af8ade89314ff8fae26e39193434efa216ea462f14026336351ce6f3  Studio-M0.4-arm64-test.apk
+db4c50eb708ae5144c4c0414c36f61744682dfd90b2a27f498f9e3819273cfb7  Kit-Collaudo-M0.4.zip
+e9630dea245491211d88dd26d333e3c72cef81aeaf7ac36c2516e4c8535bb00c  Insurance-Cinematic-Studio-M0.4-sorgenti.zip
+aa953086c463e0ebf10ad995f2a0d1a9a1f63c29b6392b4a2d3b934be1ed008a  STATUS-M0.4.md
