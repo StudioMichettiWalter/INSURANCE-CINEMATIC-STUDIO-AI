@@ -1,0 +1,4 @@
+977ed5562b0d3a76137424b0a41b6b86182d736fd699cae5ad7c43da4944f74f  Insurance-Studio-M0.3-Setup.exe
+82ffe3a38392c9171c660c64f6bf3d4fdcfad9774237274db78577f1cc6bc3b3  Studio-M0.3-r1-arm64-test.apk
+c2fe5c607132715af64ac004bdea0a74e580ec099d39aa6f8545424c0ee82f48  Insurance-Cinematic-Studio-M0.3-sorgenti.zip
+eb2ae54635eb25f849b182173a7d5c51adbf23689f6190f652757fce06d4e035  STATUS-M0.3.md
