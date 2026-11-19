@@ -5,3 +5,5 @@ __pycache__/
 *.keystore
 *.jks
 local.properties
+
+/qa/windows-new-tests/

@@ -5,6 +5,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $interactive = $PSBoundParameters.Count -eq 0
 . (Join-Path $PSScriptRoot 'LocalAi.ps1')
+. (Join-Path $PSScriptRoot 'Quality.ps1')
 
 function Select-Path([string]$title, [string]$filter, [bool]$save) {
     $dialog = if ($save) { New-Object System.Windows.Forms.SaveFileDialog } else { New-Object System.Windows.Forms.OpenFileDialog }
@@ -113,12 +114,24 @@ try {
         $inference = Invoke-LocalInference $cues[0].Text ((Resolve-Path -LiteralPath $Llama).ProviderPath) ((Resolve-Path -LiteralPath $ModelloLlm).ProviderPath) $scratchDir
         $keyword = $inference.keyword
     }
+    if ([double]::Parse($video[0].duration,$culture)+1/30 -lt $seconds) {
+        throw 'La clip deve coprire tutta la narrazione.'
+    }
+    foreach ($cue in $cues) {
+        if ($cue.Start -lt 0 -or $cue.End -gt $seconds*1000+10) {
+            throw 'Cue esterno alla durata della narrazione. Verificare i timestamp.'
+        }
+    }
     Write-Captions $cues $keyword (Join-Path $scratchDir 'captions.ass')
     [void][IO.Directory]::CreateDirectory((Join-Path $scratchDir 'fonts'))
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'fonts/Inter.ttf') -Destination (Join-Path $scratchDir 'fonts/Inter.ttf')
+    $sourceMeasure = Measure-Export $ffmpeg $Voce
+    if (!$sourceMeasure.checks.livelli_misurabili) { throw 'Narrazione silenziosa o livelli non misurabili.' }
+    $m = $sourceMeasure.loudnorm_measurements
+    $normalizer = "loudnorm=I=-16:TP=-1.5:LRA=8:linear=true:measured_I=$($m.input_i):measured_TP=$($m.input_tp):measured_LRA=$($m.input_lra):measured_thresh=$($m.input_thresh):offset=$($m.target_offset),apad"
     $partial = Join-Path ([IO.Path]::GetDirectoryName($out)) ".$job.partial.mp4"
     $filters = "[0:v:0]fps=30,scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:0x0A1628,setsar=1,tpad=stop_mode=clone:stop_duration=$duration[bg];[bg][2:v]overlay=(W-w)/2:(H-h)/2,ass=captions.ass:fontsdir=fonts[v]"
-    $arguments = @('-hide_banner','-loglevel','warning','-n','-i',$Clip,'-i',$Voce,'-f','rawvideo','-pixel_format','rgba','-video_size','1080x1920','-framerate','30','-i','pipe:0','-filter_complex',$filters,'-map','[v]','-map','1:a:0','-af','loudnorm=I=-16:TP=-1.5:LRA=11,apad','-t',$duration,'-c:v','libx264','-pix_fmt','yuv420p','-c:a','aac','-ar','48000','-movflags','+faststart',$partial)
+    $arguments = @('-hide_banner','-loglevel','warning','-n','-i',$Clip,'-i',$Voce,'-f','rawvideo','-pixel_format','rgba','-video_size','1080x1920','-framerate','30','-i','pipe:0','-filter_complex',$filters,'-map','[v]','-map','1:a:0','-af',$normalizer,'-t',$duration,'-c:v','libx264','-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-ar','48000','-movflags','+faststart',$partial)
     Write-Host "Render locale di $frames fotogrammi. Ctrl+C per interrompere."
     $encoder = Start-Tool $ffmpeg $arguments $scratchDir $false $true
     $renderer = Start-Tool (Join-Path $PSScriptRoot 'scene-frames.exe') @('1080','1920',"$frames") $scratchDir $true $false
@@ -139,11 +152,21 @@ try {
         if (($ticks[$n] * [long]$tb[0] * 30) -ne ($n * [long]$tb[1])) { throw "Cadenza diversa da CFR al frame $n." }
     }
     if ($v.width -ne 1080 -or $v.height -ne 1920 -or $v.codec_name -ne 'h264' -or $v.r_frame_rate -ne '30/1' -or [int]$v.nb_frames -ne $frames -or $a.codec_name -ne 'aac' -or $a.sample_rate -ne '48000' -or [Math]::Abs([double]::Parse($a.duration,$culture) - $frames/30) -gt 1/30) { throw 'Verifica dei flussi MP4 fallita.' }
+    if ([Math]::Abs([double]::Parse($v.duration,$culture)-$frames/30) -gt 1/30) {
+        throw 'Durata video fuori tolleranza.'
+    }
+    $quality = Measure-Export $ffmpeg $partial
+    if ($quality.status -eq 'BLOCKED') {
+        $failureReport = "$out.$job.qa-blocked.json"
+        Write-Text $failureReport ($quality | ConvertTo-Json -Depth 6)
+        throw "QA materiale fallita. Consultare $failureReport e correggere livelli audio o fotogrammi neri."
+    }
     $report = "$out.$job"
     [void][IO.Directory]::CreateDirectory($report)
     try {
         [IO.File]::Copy($cuePath, (Join-Path $report 'sottotitoli.srt'))
         if ($inference) { Write-Text (Join-Path $report 'inferenza.json') ($inference | ConvertTo-Json -Depth 5) }
+        Write-Text (Join-Path $report 'qa.json') ($quality | ConvertTo-Json -Depth 6)
         Write-Text (Join-Path $report 'ffprobe.json') ($media | ConvertTo-Json -Depth 10)
         [IO.File]::Move($partial, $out)
     } catch { [IO.Directory]::Delete($report, $true); throw }

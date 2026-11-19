@@ -1,6 +1,9 @@
 Unicode true
 Name "Insurance Cinematic Studio — prova M0"
-OutFile "build/Insurance-Studio-M0-Setup.exe"
+!ifndef STUDIO_SETUP
+  !define STUDIO_SETUP "build/Insurance-Studio-M0-Setup.exe"
+!endif
+OutFile "${STUDIO_SETUP}"
 RequestExecutionLevel user
 InstallDir "$LOCALAPPDATA\InsuranceCinematicStudioM0"
 ShowInstDetails show
@@ -15,6 +18,7 @@ Section
   File "build/scene-frames.exe"
   File "Export-M0.ps1"
   File "LocalAi.ps1"
+  File "Quality.ps1"
   File "windows.lock.json"
   File "Prepare-Runtime.ps1"
   File "../llm/prompt.it.txt"
@@ -30,7 +34,7 @@ Section
   WriteUninstaller "$INSTDIR\Disinstalla.exe"
   CreateShortcut "$SMPROGRAMS\Insurance Cinematic Studio M0.lnk" "$INSTDIR\StudioM0.exe"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\InsuranceCinematicStudioM0" "DisplayName" "Insurance Cinematic Studio — prova M0"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\InsuranceCinematicStudioM0" "DisplayVersion" "0.1.0"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\InsuranceCinematicStudioM0" "DisplayVersion" "0.1.0-m0.3"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\InsuranceCinematicStudioM0" "UninstallString" '"$INSTDIR\Disinstalla.exe"'
 SectionEnd
 Section "Uninstall"
@@ -40,6 +44,7 @@ Section "Uninstall"
   Delete "$INSTDIR\windows.lock.json"
   Delete "$INSTDIR\Prepare-Runtime.ps1"
   Delete "$INSTDIR\LocalAi.ps1"
+  Delete "$INSTDIR\Quality.ps1"
   Delete "$INSTDIR\prompt.it.txt"
   Delete "$INSTDIR\dependencies.lock.json"
   Delete "$INSTDIR\asr.lock.json"

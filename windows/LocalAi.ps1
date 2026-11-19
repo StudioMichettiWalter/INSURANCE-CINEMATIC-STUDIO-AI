@@ -40,13 +40,16 @@ function Invoke-LocalInference([string]$transcript, [string]$enginePath, [string
 }
 function Read-Cues([string]$file) {
     $inputText = [IO.File]::ReadAllText($file).Replace("`r","").Trim()
+    $lastEnd = 0
     foreach ($block in ($inputText -split '\n\s*\n')) {
         $match = [regex]::Match($block, '(?s)^\s*\d+\n(\d\d):(\d\d):(\d\d),(\d{3}) --> (\d\d):(\d\d):(\d\d),(\d{3})\s*\n(.+)$')
         if (!$match.Success) { throw 'Cue SRT non valido.' }
         $g = $match.Groups
         $ms1 = (([int]$g[1].Value*60+[int]$g[2].Value)*60+[int]$g[3].Value)*1000+[int]$g[4].Value
         $ms2 = (([int]$g[5].Value*60+[int]$g[6].Value)*60+[int]$g[7].Value)*1000+[int]$g[8].Value
-        if ($ms2 -le $ms1) { throw 'Cue senza durata.' }
+        if ([int]$g[2].Value -ge 60 -or [int]$g[3].Value -ge 60 -or [int]$g[6].Value -ge 60 -or [int]$g[7].Value -ge 60) { throw 'Timestamp SRT fuori intervallo.' }
+        if ($ms2 -le $ms1 -or $ms1 -lt $lastEnd) { throw 'Cue sovrapposto o senza durata.' }
+        $lastEnd = $ms2
         [pscustomobject]@{ Start=$ms1; End=$ms2; Text=($g[9].Value -replace '\s+',' ').Trim() }
     }
 }

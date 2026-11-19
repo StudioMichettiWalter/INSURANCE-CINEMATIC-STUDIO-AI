@@ -1,0 +1,13 @@
+{
+  "status": "BLOCKED",
+  "checks": {
+    "livelli_misurabili": true,
+    "loudness": false,
+    "true_peak": false,
+    "nessun_frame_nero": true
+  },
+  "integrated_lufs": "-17.41",
+  "true_peak_dbtp": "-0.52",
+  "black_intervals": [],
+  "revisione_umana": "NON ESEGUITO"
+}

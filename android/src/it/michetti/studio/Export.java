@@ -44,6 +44,7 @@ final class Export {
             MediaFormat sound=narration.getTrackFormat(track);
             long duration=pcmDuration>0 ? pcmDuration : sound.getLong(MediaFormat.KEY_DURATION);
             if(duration<=0 || duration>600_000_000L) throw new IOException("Durata audio supportata nello spike: fino a 10 minuti.");
+            captions.validateDuration((duration+999)/1000);
             int total=(int)((duration*FPS+999999)/1000000);
             String videoLength=reader.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
             if(videoLength==null || Long.parseLong(videoLength)*1000+33333<duration)

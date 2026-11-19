@@ -6,5 +6,5 @@ nsis=${MAKENSIS:-makensis}
 mkdir -p build
 "$cc" -std=c11 -O2 -Wall -Wextra -Werror -municode -mwindows launcher.c -o build/StudioM0.exe -luser32
 "$cc" -std=c11 -O2 -Wall -Wextra -Werror ../core/scene.c ../core/render.c -o build/scene-frames.exe -lm
-"$nsis" -V2 studio.nsi
-sha256sum build/*.exe
+"$nsis" -V2 "-DSTUDIO_SETUP=${SETUP_OUT:-build/Insurance-Studio-M0-Setup.exe}" studio.nsi
+sha256sum "${SETUP_OUT:-build/Insurance-Studio-M0-Setup.exe}" build/StudioM0.exe build/scene-frames.exe

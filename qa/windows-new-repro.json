@@ -1,0 +1,82 @@
+{
+  "accepted": {
+    "status": "QA",
+    "checks": {
+      "livelli_misurabili": true,
+      "loudness": true,
+      "true_peak": true,
+      "nessun_frame_nero": true
+    },
+    "integrated_lufs": "-16.86",
+    "true_peak_dbtp": "-1.35",
+    "loudnorm_measurements": {
+      "input_i": "-16.86",
+      "input_tp": "-1.35",
+      "input_lra": "1.10",
+      "input_thresh": "-26.86",
+      "output_i": "-15.97",
+      "output_tp": "-1.50",
+      "output_lra": "0.00",
+      "output_thresh": "-25.97",
+      "normalization_type": "dynamic",
+      "target_offset": "-0.03"
+    },
+    "black_intervals": [],
+    "revisione_umana": "NON ESEGUITO"
+  },
+  "black": {
+    "status": "BLOCKED",
+    "checks": {
+      "livelli_misurabili": true,
+      "loudness": true,
+      "true_peak": true,
+      "nessun_frame_nero": false
+    },
+    "integrated_lufs": "-16.05",
+    "true_peak_dbtp": "-11.67",
+    "loudnorm_measurements": {
+      "input_i": "-16.05",
+      "input_tp": "-11.67",
+      "input_lra": "0.00",
+      "input_thresh": "-26.05",
+      "output_i": "-15.99",
+      "output_tp": "-11.62",
+      "output_lra": "0.00",
+      "output_thresh": "-25.99",
+      "normalization_type": "linear",
+      "target_offset": "-0.01"
+    },
+    "black_intervals": [
+      "black_start:0 black_end:0.966667 black_duration:0.966667"
+    ],
+    "revisione_umana": "NON ESEGUITO"
+  },
+  "silence": {
+    "status": "BLOCKED",
+    "checks": {
+      "livelli_misurabili": false,
+      "loudness": false,
+      "true_peak": false,
+      "nessun_frame_nero": true
+    },
+    "integrated_lufs": "-inf",
+    "true_peak_dbtp": "-inf",
+    "loudnorm_measurements": {
+      "input_i": "-inf",
+      "input_tp": "-inf",
+      "input_lra": "0.00",
+      "input_thresh": "-70.00",
+      "output_i": "-inf",
+      "output_tp": "-inf",
+      "output_lra": "0.00",
+      "output_thresh": "-70.00",
+      "normalization_type": "linear",
+      "target_offset": "inf"
+    },
+    "black_intervals": [],
+    "revisione_umana": "NON ESEGUITO"
+  },
+  "existing_export_preserved": true,
+  "silent_export_blocked": true,
+  "platform": "Host PowerShell 7. Windows nativo NON ESEGUITO."
+}

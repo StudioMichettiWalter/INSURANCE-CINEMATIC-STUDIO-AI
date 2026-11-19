@@ -1,7 +1,7 @@
 # Insurance Cinematic Studio AI
 
 [Scarica i pacchetti Windows, Android e i modelli](https://github.com/StudioMichettiWalter/INSURANCE-CINEMATIC-STUDIO-AI/tree/insurance-studio-download). Nella pagina aprire **Code > Download ZIP**, estrarre la cartella e seguire README.md. Per i modelli usare Ricostruisci-Modelli.ps1.
-**Checkpoint tecnico 0.1.0-m0.1 per Walter Michetti.** Iniziare da STATUS.md per gli esiti. La specifica accettata e le preferenze editoriali originali sono conservate integralmente in source/. La scheda installabile delle regole è docs/regole-prodotto.json. Il template manifest v1 è stato scritto per questo repository perché mancava nello ZIP originale.
+**Checkpoint tecnico 0.1.0-m0.3 per Walter Michetti.** Iniziare da STATUS.md per gli esiti. La specifica accettata e le preferenze editoriali originali sono conservate integralmente in source/. La scheda installabile delle regole è docs/regole-prodotto.json. Il template manifest v1 è stato scritto per questo repository perché mancava nello ZIP originale.
 
 ## Uso dei pacchetti di prova
 - Windows x64. Verificare l'hash dell'installer e seguire windows/README.md per predisporre i motori CPU, FFmpeg, ffprobe e i modelli. Lanciare il setup per utente e aprire il laboratorio M0. Scegliere i file locali, il percorso di lavoro e un nuovo nome di export.

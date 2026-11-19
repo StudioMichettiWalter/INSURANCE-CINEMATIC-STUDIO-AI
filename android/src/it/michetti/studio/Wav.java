@@ -3,44 +3,19 @@ package it.michetti.studio;
 import android.media.*;
 import java.io.*;
 import java.nio.*;
-import java.nio.charset.StandardCharsets;
 
 /** WAV PCM16 mono/stereo a 48 kHz o 16 kHz. Interpolazione lineare per la prova M0. */
 final class Wav {
-    static boolean isWave(File f) throws IOException {
-        try(RandomAccessFile in=new RandomAccessFile(f,"r")) {
-            return in.length()>=12 && tag(in).equals("RIFF") && skipTag(in).equals("WAVE");
-        }
+    static boolean isWave(File file) throws IOException {
+        return WavPcm.isWave(file);
     }
-    private static String tag(RandomAccessFile in) throws IOException {
-        byte[] b=new byte[4]; in.readFully(b);return new String(b,StandardCharsets.US_ASCII);
-    }
-    private static String skipTag(RandomAccessFile in) throws IOException { in.skipBytes(4); return tag(in); }
-    private static int u16(RandomAccessFile in) throws IOException {return Short.reverseBytes(in.readShort())&65535;}
-    private static long u32(RandomAccessFile in) throws IOException {return Integer.reverseBytes(in.readInt())&0xffffffffL;}
     static long encode(File src,File dst) throws Exception {
-        try(RandomAccessFile in=new RandomAccessFile(src,"r")) {
-            in.seek(12);int channels=0,rate=0;long start=-1,size=0;
-            while(in.getFilePointer()+8<=in.length()) {
-                String id=tag(in);long len=u32(in);long p=in.getFilePointer();
-                if(len>in.length()-p)throw new IOException("Chunk WAV troncato.");
-                if(id.equals("fmt ")) {
-                    if(len<16 || u16(in)!=1)throw new IOException("Richiesto PCM16 WAV.");
-                    channels=u16(in);rate=(int)u32(in);in.skipBytes(6);
-                    if(u16(in)!=16 || (rate!=16000 && rate!=48000) || (channels!=1 && channels!=2))
-                        throw new IOException("Richiesto PCM16 mono/stereo a 16 o 48 kHz.");
-                } else if(id.equals("data")){start=p;size=len;}
-                in.seek(p+len+(len&1));
-            }
-            if(start<0 || size<=0 || channels==0 || size%(channels*2)!=0)throw new IOException("WAV senza PCM valido.");
-            long samples=size/(2*channels);
-            if(samples>(long)rate*600)throw new IOException("Lo spike supporta fino a 10 minuti.");
-            try(FileInputStream raw=new FileInputStream(src)){
-                raw.getChannel().position(start);
-                try(DataInputStream data=new DataInputStream(new BufferedInputStream(raw))) {
-                    encodePcm(data,samples,channels,rate,dst);
-                    return (samples*1000000L+rate/2)/rate;
-                }
+        WavPcm pcm = WavPcm.read(src);
+        try(FileInputStream raw=new FileInputStream(src)) {
+            raw.getChannel().position(pcm.offset);
+            try(DataInputStream data=new DataInputStream(new BufferedInputStream(raw))) {
+                encodePcm(data,pcm.frames,pcm.channels,pcm.rate,dst);
+                return (pcm.frames*1000000L+pcm.rate/2)/pcm.rate;
             }
         }
     }

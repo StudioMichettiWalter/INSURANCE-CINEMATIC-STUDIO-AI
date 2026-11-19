@@ -1,0 +1,25 @@
+PASS PCM16 mono 16 kHz
+PASS stereo 48 kHz
+PASS ordine chunk data prima di fmt
+PASS chunk estraneo dispari e padding
+PASS PCM con estensione vuota
+PASS RIFF troncato — Lunghezza RIFF incoerente o WAV troncato.
+PASS RIFF con byte estranei finali — Lunghezza RIFF incoerente o WAV troncato.
+PASS dimensione RIFF troppo piccola — Lunghezza RIFF incoerente o WAV troncato.
+PASS fmt duplicato — Chunk formato WAV duplicato.
+PASS data duplicato — Chunk audio WAV duplicato.
+PASS fmt assente — WAV senza frame PCM completi.
+PASS data assente — WAV senza frame PCM completi.
+PASS data vuoto — WAV senza frame PCM completi.
+PASS frame stereo incompleto — WAV senza frame PCM completi.
+PASS block align errato — Allineamento o byte rate WAV incoerente.
+PASS byte rate errato — Allineamento o byte rate WAV incoerente.
+PASS frequenza non supportata — Richiesto PCM16 mono/stereo a 16 o 48 kHz.
+PASS bit depth non supportata — Richiesto PCM16 mono/stereo a 16 o 48 kHz.
+PASS fmt 17 byte — Richiesto PCM16 WAV.
+PASS estensione fmt incoerente — Estensione formato WAV incoerente.
+PASS dimensione unsigned oltre file — Chunk WAV o padding troncato.
+PASS padding dispari assente — Chunk WAV o padding troncato.
+PASS intestazione chunk incompleta — Intestazione chunk WAV troncata.
+PASS durata oltre dieci minuti — Lo spike supporta fino a 10 minuti.
+PASS totale 24

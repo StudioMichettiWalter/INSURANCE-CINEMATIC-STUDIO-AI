@@ -38,3 +38,12 @@ Gli URL e SHA-256 sono in asr.lock.json, dependencies.lock.json e windows.lock.j
 ```
 
 Se l’avvio della GUI fallisce, usare questo comando da una console per conservare il messaggio di errore. Su computer con policy aziendale che richiede firma Authenticode, chiedere all’amministratore di convalidare lo script. Il setup M0 è privo di firma. I modelli rimangono nella cartella runtime separata dopo la disinstallazione.
+
+## Controllo qualità M0.3
+Il driver misura il parlato prima della codifica e applica loudnorm in due passaggi, poi codifica AAC a 192 kbit/s. Sul file codificato verifica la durata audio/video, i timestamp CFR, loudness integrato da -17 a -13 LUFS, true peak <= -1 dBTP e fotogrammi neri rilevati con blackdetect. Se uno dei controlli materiali fallisce, conserva un rapporto qa-blocked.json e interrompe il commit del master. Un export precedente rimane intatto. Il rapporto finale qa.json distingue i controlli automatici dalla revisione umana.
+
+Per riprodurre su Linux il test dello stesso script con PowerShell 7, FFmpeg e compilatore C eseguire da radice repository:
+```sh
+python3 windows/tests/host.py --pwsh /percorso/pwsh
+```
+Il test crea file sintetici in una directory temporanea e verifica master valido, immagine nera, silenzio, conservazione dell'export precedente e blocco della narrazione muta. I risultati host non verificano installazione o esecuzione Windows nativa.

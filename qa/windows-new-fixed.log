@@ -1,0 +1,3 @@
+Render locale di 99 fotogrammi. Ctrl+C per interrompere.
+[aist#1:0/pcm_s16le @ 0x556f082b5c00] Guessed Channel Layout: mono
+Exception: QA materiale fallita. Consultare /workspace/work/studio/qa/windows-new-tests/master-fixed.mp4.f23cacd3031d4213b37cab9b6c284178.qa-blocked.json e correggere livelli audio o fotogrammi neri.
