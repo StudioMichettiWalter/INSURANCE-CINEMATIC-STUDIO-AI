@@ -2,7 +2,7 @@
 
 L’installer per utente aggiunge «Insurance Cinematic Studio M0» al menu Start. Lo spike richiede Windows PowerShell 5.1 con esecuzione degli script locali permessa e un runtime preparato come descritto sotto, oppure ffmpeg.exe e ffprobe.exe nel PATH. La build FFmpeg deve offrire subtitles/libass, overlay, libx264 e AAC. La pagina https://ffmpeg.org/download.html indica le distribuzioni Windows. Verificare la licenza della distribuzione scelta. Il setup non installa codec né richiede privilegi amministrativi. Per disinstallare usare Applicazioni installate.
 
-Avviare dal menu Start. Selezionare clip, voce, didascalie SRT UTF-8 e un nuovo nome per il master. Il compositing conserva l’inquadratura del clip, aggiunge un contratto 3D renderizzato localmente e sovrappone le didascalie. La voce governa la durata. Lo spike mantiene l’ultimo frame se il clip è corto. Scegliere clip già accordate con la voce. Limite sperimentale di 300 s. La finestra console mostra gli errori di codifica. Ctrl+C interrompe il job. Output preesistenti sono protetti.
+Avviare dal menu Start. Selezionare clip, voce, didascalie SRT UTF-8 e un nuovo nome per il master. Il compositing conserva l’inquadratura del clip, aggiunge un contratto 3D renderizzato localmente e sovrappone le didascalie. La voce governa la durata. Scegliere una clip che copra la durata della narrazione. Il driver rifiuta una clip più corta oltre la tolleranza di un fotogramma. Limite sperimentale di 300 s. La finestra console mostra gli errori di codifica. Ctrl+C interrompe il job. Output preesistenti sono protetti.
 
 Da PowerShell, con i percorsi reali dei propri file:
 
@@ -10,7 +10,7 @@ Da PowerShell, con i percorsi reali dei propri file:
 & "$env:LOCALAPPDATA\InsuranceCinematicStudioM0\Export-M0.ps1" -Clip .\clip.mp4 -Voce .\voce.wav -Sottotitoli .\cue.srt -Destinazione .\master-nuovo.mp4
 ```
 
-L’export verifica i flussi con ffprobe, il numero di fotogrammi, il formato verticale 1080×1920, il rate nominale 30/1, la frequenza AAC a 48 kHz e la durata audio. Restano da controllare misura LUFS e picco, sincronismo percepito, safe area e leggibilità. Il percorso Windows dello spike accetta didascalie già temporizzate. La modalità automatica integra i modelli locali descritti sotto. Il collaudo nativo Windows resta aperto.
+L’export verifica i flussi con ffprobe, il numero di fotogrammi, il formato verticale 1080×1920, il rate nominale 30/1, la frequenza AAC a 48 kHz e la durata audio. La build M0.3 misura anche LUFS e true peak sul master. Sincronismo percepito, safe area e leggibilità richiedono una verifica sul dispositivo. Il percorso Windows dello spike accetta didascalie già temporizzate. La modalità automatica integra i modelli locali descritti sotto. Il collaudo nativo Windows resta aperto.
 
 Per ricostruire su Linux, preparare un compilatore LLVM-MinGW UCRT x64 e makensis, quindi dalla radice del repository eseguire `bash windows/build.sh`. Impostare WIN_CC e MAKENSIS per specificare i percorsi degli eseguibili. La compilazione produce i file in windows/build. Il runner usa Inter, distribuito con la licenza SIL OFL 1.1 in fonts/OFL.txt. Per versioni e prove consultare qa/windows*.
 
@@ -23,7 +23,7 @@ $studio = "$env:LOCALAPPDATA\InsuranceCinematicStudioM0"
 & "$studio\Prepare-Runtime.ps1"
 ```
 
-Con il kit offline di pesi verificati, passare allo stesso comando `-WhisperModel 'D:\modelli\ggml-small-q5_1.bin' -QwenModel 'D:\modelli\qwen.gguf'`. Si scaricano solo i pacchetti degli eseguibili mancanti. Per preparare un PC privo di rete è possibile copiare gli archivi originali nelle posizioni indicate sotto, quindi eseguire il comando con i percorsi dei modelli.
+Con il kit offline di pesi verificati, passare allo stesso comando `-WhisperModel 'D:\modelli\ggml-small-q5_1.bin' -QwenModel 'D:\modelli\qwen2.5-0.5b-instruct-q4_k_m.gguf'`. Si scaricano solo i pacchetti degli eseguibili mancanti. Per preparare un PC privo di rete è possibile copiare gli archivi originali nelle posizioni indicate sotto, quindi eseguire il comando con i percorsi dei modelli.
 
 | File sotto %LOCALAPPDATA%\InsuranceStudioM0-Runtime | Fonte fissata |
 |---|---|

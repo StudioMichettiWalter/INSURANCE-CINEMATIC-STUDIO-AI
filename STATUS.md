@@ -39,3 +39,7 @@ Correzioni successive al checkpoint iniziale, mantenendo aperto il gate fisico.
 I pacchetti precedenti restano riferimenti storici. L'APK M0.3-r1 ha un certificato di test diverso da quello precedente, usare un profilo di collaudo separato oppure salvare i dati prima di pianificare una nuova installazione. Il test di aggiornamento richiede il keystore stabile del proprietario.
 
 Hardware dichiarato dal proprietario per il collaudo M0.3, Realme 11 Pro+ 5G 12+12 GB e PC Windows 11. Dettagli e prove ancora da rilevare in docs/HARDWARE.md. Nessuna compatibilità fisica dedotta dal solo nome commerciale.
+
+## Kit per il collaudo fisico M0.3
+
+Aggiunti clip, voce e SRT sintetici pronti all'uso, raccoglitore Windows e confronto diagnostico degli ZIP delle build correnti. I due percorsi Windows hanno prodotto la diagnostica attesa sul banco PowerShell Linux, con 99 fotogrammi e livelli audio nella soglia. La procedura per i dispositivi è in docs/COLLAUDO-RAPIDO.md. Evidenze host in qa/collaudo-kit-m03.md. Il gate fisico e la verifica dello stesso bundle progetto restano aperti.

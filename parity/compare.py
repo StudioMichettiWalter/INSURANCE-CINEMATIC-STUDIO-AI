@@ -173,11 +173,21 @@ def compare(left, right, bundle):
     left_plan, left_cues = inspect_ledger(left, digest, manifest)
     right_plan, right_cues = inspect_ledger(right, digest, manifest)
     checks = dict(same_render_plan=left_plan == right_plan, same_cues=left_cues == right_cues)
-    paths = [left / 'master.mp4', right / 'master.mp4']
-    plans = [left_plan, right_plan]
-    meta = [metadata(p, plan['frames']) for p, plan in zip(paths, plans)]
+    measurements = compare_media(
+        left / 'master.mp4', right / 'master.mp4',
+        left_plan['frames'], right_plan['frames'], sample_indices(left_plan))
+    checks.update(measurements.pop('controlli'))
+    return dict(esito='PASS' if all(checks.values()) else 'FAIL', controlli=checks,
+                approvazione_soglie='PENDENTE', bundle_sha256=digest,
+                seed=[left_plan['seed'], right_plan['seed']], **measurements)
+
+
+def compare_media(left, right, left_frames, right_frames, indices):
+    paths = [left, right]
+    meta = [metadata(p, n) for p, n in zip(paths, (left_frames, right_frames))]
+    checks = {}
     checks['same_audio_layout'] = all(meta[0][k] == meta[1][k] for k in ['audio_channels', 'audio_layout'])
-    indices = [i for i in sample_indices(left_plan) if i < right_plan['frames']]
+    indices = [i for i in indices if i < right_frames]
     l, r = [samples(p, indices) for p in paths]
     worst_frame = 0.0
     worst_tile = 0.0
@@ -195,11 +205,10 @@ def compare(left, right, bundle):
     checks['loudness_delta'] = abs(lev_a['lufs'] - lev_b['lufs']) <= THRESHOLDS['loudness_delta_lu']
     corr, shift = waveform_agreement(pcm_a, pcm_b)
     checks['waveform'] = corr >= THRESHOLDS['pcm_min_correlation']
-    return dict(esito='PASS' if all(checks.values()) else 'FAIL', controlli=checks,
-                soglie_proposte=THRESHOLDS, approvazione_soglie='PENDENTE', bundle_sha256=digest,
-                seed=[p['seed'] for p in plans], frame_campionati=indices,
-                errore_rgb_medio_massimo=worst_frame, errore_tessera_massimo=worst_tile,
-                livelli=[lev_a, lev_b], correlazione_audio=corr, offset_campioni=shift, stream=meta)
+    return dict(controlli=checks, soglie_proposte=THRESHOLDS,
+                frame_campionati=indices, errore_rgb_medio_massimo=worst_frame,
+                errore_tessera_massimo=worst_tile, livelli=[lev_a, lev_b],
+                correlazione_audio=corr, offset_campioni=shift, stream=meta)
 
 
 def main():

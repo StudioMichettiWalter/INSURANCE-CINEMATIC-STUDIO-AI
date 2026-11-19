@@ -28,3 +28,7 @@ Il risultato ha codice di uscita 0 per PASS e 1 per FAIL. File mancanti, timelin
 | Forma d'onda | Stesso numero e disposizione di canali; correlazione ≥0,985 su tracce mono a 8 kHz, ricerca ritardo entro ±8 campioni (1 ms) | Individua sostituzioni della voce e scarti temporali lasciando margine per la codifica AAC |
 
 I valori sono ipotesi di lavoro. Calibrarli su più coppie di export dei dispositivi reali, annotare e approvare la revisione del criterio prima della verifica finale. Il confronto audio ridotto può perdere differenze stereo o ad alta frequenza. La riduzione dell'immagine e il campionamento possono perdere errori piccoli o tra campioni. Il confronto dei cue verifica i file SRT; resa dei glifi, leggibilità, colore della pelle, sincronismo percepito, rumori e correttezza assicurativa richiedono revisione umana sulle due riproduzioni. Nel laboratorio le fixture rimangono nelle cartelle temporanee del test.
+
+## Diagnostica sui pacchetti M0.3
+
+Il [kit guidato](../docs/COLLAUDO-RAPIDO.md) usa i due ZIP esportabili dalle build M0.3 e controlla gli hash e i cue della fixture prima del confronto tecnico. Il comando `compare_m0.py` condivide le misure audio e video di `compare.py`. Le applicazioni M0.3 esportano la diagnostica media. La registrazione dello stesso bundle progetto e del piano di render sui due target resta da completare per l'accettazione integrale.

@@ -1,4 +1,7 @@
 # Protocollo M0 sul dispositivo
+
+Per la prima prova, il [kit sintetico M0.3](COLLAUDO-RAPIDO.md) raccoglie ZIP e hash con gli export delle build correnti. Il confronto diagnostico del kit affianca la verifica del bundle progetto richiesta per l’accettazione finale.
+
 Conservare separatamente gli output di ogni esecuzione e l'identità dello sperimentatore. Usare materiale di test locale, senza credenziali o dati dei clienti. L'assenza del telefono di Walter rende necessaria una prova su uno smartphone ARM64 identificato per marca, modello, memoria e versione Android. Annotare se è un hardware equivalente.
 
 1. Calcolare SHA-256 di APK o installer e confrontarlo con SHA256SUMS. Registrare versione del sistema, ABI, RAM, spazio libero, driver GPU, encoder, versione e hash dei modelli. Usare la stessa clip, lo stesso file voce e lo stesso testo di riferimento dai test. Per generare la clip eseguire il comando FFmpeg in tests/host-spike.sh su una macchina di preparazione. Trasferire i file prima del collaudo.
